@@ -4,6 +4,7 @@ var path = require('path');
 var bodyParser = require('body-parser');
 
 var app = express();
+app.set('port', (process.env.PORT || 3000))
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
@@ -12,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Setup Stripe
-var stripe = require("stripe")("sk_test_BQokikJOvBiI2HlWgH4olfQ2");
+var stripe = require("stripe")(process.env.SECRET_KEY);
 var T_SHIRT_PRICE_CENTS = 999
 var T_SHIRT_PRICE_CURRENCY = 'sgd'
 
@@ -50,7 +51,7 @@ app.post('/charge', function (req, res) {
 			res.redirect('/thanks');
 		},
 		function(err) {
-			console.log('Error: ', err);
+			console.log('There was an error: ', err);
 			res.render('sorry', {
 				message: err.message
 			});
@@ -59,6 +60,6 @@ app.post('/charge', function (req, res) {
 });
 
 // Run
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+app.listen(app.get('port'), function() {
+  console.log('Stripe Shop Demo app is running on port', app.get('port'));
 });
