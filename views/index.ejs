@@ -39,36 +39,38 @@
 						<div class="row buy-buttons">
 							<div class="col-xs-6">
 								<!-- <button type="button" class="btn btn-primary">Buy Women's</button> -->
+								<p><%= womenCurrency.toUpperCase() %> <%= womenPrice/100 %></p>
 								<form action="/charge" method="POST">
 								  <script
 								    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
 								    data-key="pk_test_6pRNASCoBOKtIshFeQd4XMUh"
-								    data-amount="<%= price %>"
-								    data-currency="<%= currency %>"
+								    data-amount="<%= womenPrice %>"
+								    data-currency="<%= womenCurrency %>"
 								    data-name="Stripe Shop Demo"
 								    data-description="Women's T-shirt"
 								    data-image="/thumb-womens.png"
 								    data-locale="auto"
-								    data-panel-label="Buy Women's"
 								    data-label="Buy Women's">
 								  </script>
+								  <input type="hidden" name="type" value="Women">
 								</form>
 							</div>
 							<div class="col-xs-6">
 								<!-- <button type="button" class="btn btn-primary">Buy Men's</button> -->
+								<p><%= menCurrency.toUpperCase() %> <%= menPrice/100 %></p>
 								<form action="/charge" method="POST">
 								  <script
 								    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
 								    data-key="pk_test_6pRNASCoBOKtIshFeQd4XMUh"
-								    data-amount="<%= price %>"
-								    data-currency="<%= currency %>"
+								    data-amount="<%= menPrice %>"
+								    data-currency="<%= menCurrency %>"
 								    data-name="Stripe Shop Demo"
 								    data-description="Men's T-shirt"
 								    data-image="/thumb-mens.png"
 								    data-locale="auto"
-								    data-panel-label="Buy Men's"
 								    data-label="Buy Men's">
 								  </script>
+								  <input type="hidden" name="type" value="Men">
 								</form>
 							</div>
 						</div>

@@ -14,14 +14,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Setup Stripe
 var stripe = require("stripe")(process.env.SECRET_KEY);
-var T_SHIRT_PRICE_CENTS = 999
-var T_SHIRT_PRICE_CURRENCY = 'sgd'
+var MEN_PRICE_CENTS = 999
+var MEN_PRICE_CURRENCY = 'sgd'
+var WOMEN_PRICE_CENTS = 4999
+var WOMEN_PRICE_CURRENCY = 'hkd'
 
 // Routes
 app.get('/', function (req, res) {
   res.render('index', { 
-  	price: T_SHIRT_PRICE_CENTS,
-  	currency: T_SHIRT_PRICE_CURRENCY 
+  	menPrice: MEN_PRICE_CENTS,
+  	menCurrency: MEN_PRICE_CURRENCY,
+  	womenPrice: WOMEN_PRICE_CENTS,
+  	womenCurrency: WOMEN_PRICE_CURRENCY, 
   });
 });
 
@@ -33,17 +37,34 @@ app.get('/thanks', function (req, res) {
 app.post('/charge', function (req, res) {
   var stripeToken = req.body.stripeToken;
   var stripeEmail = req.body.stripeEmail;
+  var type = req.body.type;
 
 	stripe.customers.create({
 		source: stripeToken,
 		description: stripeEmail
 	}).then(
 		function(customer) {
-			return stripe.charges.create({
-		    amount: T_SHIRT_PRICE_CENTS,
-		    currency: T_SHIRT_PRICE_CURRENCY,
-		    customer: customer.id
-		  });
+			if (type === 'Men') {
+				return stripe.charges.create({
+			    amount: MEN_PRICE_CENTS,
+			    currency: MEN_PRICE_CURRENCY,
+			    customer: customer.id,
+			    metadata: {
+			    	type: type
+			    }
+			  });
+			} else if (type === 'Women') {
+				return stripe.charges.create({
+			    amount: WOMEN_PRICE_CENTS,
+			    currency: WOMEN_PRICE_CURRENCY,
+			    customer: customer.id,
+			    metadata: {
+			    	type: type
+			    }
+			  });
+			} else {
+				throw new Error("Invalid Type");
+			}
 		}
 	).then(
 	  function(charge) {
