@@ -22,10 +22,10 @@ var WOMEN_PRICE_CURRENCY = 'hkd'
 // Routes
 app.get('/', function (req, res) {
   res.render('index', { 
-  	menPrice: MEN_PRICE_CENTS,
-  	menCurrency: MEN_PRICE_CURRENCY,
-  	womenPrice: WOMEN_PRICE_CENTS,
-  	womenCurrency: WOMEN_PRICE_CURRENCY, 
+    menPrice: MEN_PRICE_CENTS,
+    menCurrency: MEN_PRICE_CURRENCY,
+    womenPrice: WOMEN_PRICE_CENTS,
+    womenCurrency: WOMEN_PRICE_CURRENCY, 
   });
 });
 
@@ -39,45 +39,45 @@ app.post('/charge', function (req, res) {
   var stripeEmail = req.body.stripeEmail;
   var type = req.body.type;
 
-	stripe.customers.create({
-		source: stripeToken,
-		description: stripeEmail
-	}).then(
-		function(customer) {
-			if (type === 'Men') {
-				return stripe.charges.create({
-			    amount: MEN_PRICE_CENTS,
-			    currency: MEN_PRICE_CURRENCY,
-			    customer: customer.id,
-			    metadata: {
-			    	type: type
-			    }
-			  });
-			} else if (type === 'Women') {
-				return stripe.charges.create({
-			    amount: WOMEN_PRICE_CENTS,
-			    currency: WOMEN_PRICE_CURRENCY,
-			    customer: customer.id,
-			    metadata: {
-			    	type: type
-			    }
-			  });
-			} else {
-				throw new Error("Invalid Type");
-			}
-		}
-	).then(
-	  function(charge) {
-			console.log('Save to DB: ', charge.id, charge.customer);
-			res.redirect('/thanks');
-		},
-		function(err) {
-			console.log('There was an error: ', err);
-			res.render('sorry', {
-				message: err.message
-			});
-		}
-	);
+  stripe.customers.create({
+    source: stripeToken,
+    description: stripeEmail
+  }).then(
+    function(customer) {
+      if (type === 'Men') {
+        return stripe.charges.create({
+          amount: MEN_PRICE_CENTS,
+          currency: MEN_PRICE_CURRENCY,
+          customer: customer.id,
+          metadata: {
+            type: type
+          }
+        });
+      } else if (type === 'Women') {
+        return stripe.charges.create({
+          amount: WOMEN_PRICE_CENTS,
+          currency: WOMEN_PRICE_CURRENCY,
+          customer: customer.id,
+          metadata: {
+            type: type
+          }
+        });
+      } else {
+        throw new Error("Invalid Type");
+      }
+    }
+  ).then(
+    function(charge) {
+      console.log('Save to DB: ', charge.id, charge.customer);
+      res.redirect('/thanks');
+    },
+    function(err) {
+      console.log('There was an error: ', err);
+      res.render('sorry', {
+        message: err.message
+      });
+    }
+  );
 });
 
 // Run
